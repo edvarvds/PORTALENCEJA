@@ -5,11 +5,94 @@ import { usePayment } from '../hooks/usePayment';
 import PaymentDisplay from '../components/PaymentDisplay';
 import PortalLayout from '../components/PortalLayout';
 
+interface LocationData {
+  query: string;
+  status: string;
+  country: string;
+  countryCode: string;
+  region: string;
+  regionName: string;
+  city: string;
+  zip: string;
+  lat: number;
+  lon: number;
+  timezone: string;
+  isp: string;
+  org: string;
+  as: string;
+}
+
+const translateState = (stateName: string): string => {
+  const stateTranslations: { [key: string]: string } = {
+    'Acre': 'Acre',
+    'Alagoas': 'Alagoas',
+    'Amapá': 'Amapá',
+    'Amazonas': 'Amazonas',
+    'Bahia': 'Bahia',
+    'Ceará': 'Ceará',
+    'Distrito Federal': 'Distrito Federal',
+    'Federal District': 'Distrito Federal',
+    'Espírito Santo': 'Espírito Santo',
+    'Goiás': 'Goiás',
+    'Maranhão': 'Maranhão',
+    'Mato Grosso': 'Mato Grosso',
+    'Mato Grosso do Sul': 'Mato Grosso do Sul',
+    'Minas Gerais': 'Minas Gerais',
+    'Pará': 'Pará',
+    'Paraíba': 'Paraíba',
+    'Paraná': 'Paraná',
+    'Pernambuco': 'Pernambuco',
+    'Piauí': 'Piauí',
+    'Rio de Janeiro': 'Rio de Janeiro',
+    'Rio Grande do Norte': 'Rio Grande do Norte',
+    'Rio Grande do Sul': 'Rio Grande do Sul',
+    'Rondônia': 'Rondônia',
+    'Roraima': 'Roraima',
+    'Santa Catarina': 'Santa Catarina',
+    'São Paulo': 'São Paulo',
+    'Sergipe': 'Sergipe',
+    'Tocantins': 'Tocantins',
+    // English to Portuguese translations
+    'Acre': 'Acre',
+    'Alagoas': 'Alagoas',
+    'Amapa': 'Amapá',
+    'Amazonas': 'Amazonas',
+    'Bahia': 'Bahia',
+    'Ceara': 'Ceará',
+    'Distrito Federal': 'Distrito Federal',
+    'Federal District': 'Distrito Federal',
+    'Espirito Santo': 'Espírito Santo',
+    'Goias': 'Goiás',
+    'Maranhao': 'Maranhão',
+    'Mato Grosso': 'Mato Grosso',
+    'Mato Grosso do Sul': 'Mato Grosso do Sul',
+    'Minas Gerais': 'Minas Gerais',
+    'Para': 'Pará',
+    'Paraiba': 'Paraíba',
+    'Parana': 'Paraná',
+    'Pernambuco': 'Pernambuco',
+    'Piaui': 'Piauí',
+    'Rio de Janeiro': 'Rio de Janeiro',
+    'Rio Grande do Norte': 'Rio Grande do Norte',
+    'Rio Grande do Sul': 'Rio Grande do Sul',
+    'Rondonia': 'Rondônia',
+    'Roraima': 'Roraima',
+    'Santa Catarina': 'Santa Catarina',
+    'Sao Paulo': 'São Paulo',
+    'Sergipe': 'Sergipe',
+    'Tocantins': 'Tocantins'
+  };
+
+  return stateTranslations[stateName] || stateName;
+};
+
 const LocationConfirmation: React.FC = () => {
   usePageTitle('Confirmar Local da Prova - ENCCEJA');
   const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [locationData, setLocationData] = useState<LocationData | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const { paymentData, isLoading, error, generatePayment, handlePaymentSuccess } = usePayment({
     amount: 11340,
@@ -24,6 +107,23 @@ const LocationConfirmation: React.FC = () => {
     if (!userData) {
       navigate('/login');
     }
+
+    // Fetch location data
+    const fetchLocation = async () => {
+      try {
+        const response = await fetch('http://ip-api.com/json/');
+        const data = await response.json();
+        if (data.status === 'success') {
+          setLocationData(data);
+        } else {
+          setLocationError('Não foi possível obter sua localização');
+        }
+      } catch (err) {
+        setLocationError('Erro ao buscar localização');
+      }
+    };
+
+    fetchLocation();
   }, [navigate]);
 
   const handleBack = () => {
@@ -70,26 +170,25 @@ const LocationConfirmation: React.FC = () => {
 
           <div className="bg-gray-50 rounded-lg p-6 mb-8">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Detalhes do Local</h3>
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Nome do Local</p>
-                <p className="text-gray-900">Escola Municipal de Ensino Fundamental</p>
+            {locationError ? (
+              <div className="text-red-600">{locationError}</div>
+            ) : locationData ? (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Cidade</p>
+                  <p className="text-gray-900">{locationData.city}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Estado</p>
+                  <p className="text-gray-900">{translateState(locationData.regionName)}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Endereço</p>
-                <p className="text-gray-900">Rua das Flores, 123 - Centro</p>
-                <p className="text-gray-900">São Paulo - SP</p>
-                <p className="text-gray-900">CEP: 01234-567</p>
+            ) : (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span className="ml-2 text-gray-600">Carregando localização...</span>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Data da Prova</p>
-                <p className="text-gray-900">15 de Agosto de 2024</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Horário</p>
-                <p className="text-gray-900">08:00 - 12:00</p>
-              </div>
-            </div>
+            )}
           </div>
 
           <div className="bg-blue-50 rounded-lg p-6 mb-8">
