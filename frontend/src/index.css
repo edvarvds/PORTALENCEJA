@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    @apply h-full w-full m-0 p-0;
+  }
+  
+  body {
+    @apply font-sans bg-gray-50;
+  }
+}
+
+@layer components {
+  .gov-header {
+    @apply bg-gov-header text-white py-2;
+  }
+  .inep-header {
+    @apply bg-inep-header py-3;
+  }
+  .form-header {
+    @apply bg-gray-100 p-4 border-b border-gray-300;
+  }
+  .form-footer {
+    @apply bg-gray-100 p-4 border-t border-gray-300;
+  }
+  .footer-bg {
+    @apply bg-footer-bg text-white;
+  }
+  .required-star {
+    @apply text-red-500 ml-1;
+  }
+  .sidebar {
+    @apply bg-form-header min-h-[calc(100vh-200px)] text-white p-4;
+  }
+  .card {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  .card:hover {
+    @apply -translate-y-1 shadow-lg;
+  }
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: inherit;
+}
+
+button {
+  cursor: pointer;
+}
