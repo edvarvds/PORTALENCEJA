@@ -10,6 +10,6 @@
   "scripts": {
     "start": "cd server && npm start",
     "build": "cd server && npm install && npm run build",
-    "heroku-postbuild": "npm install typescript && cd frontend && npm install && npm run build"
+    "heroku-postbuild": "npm install typescript && cd server && npm install && npm run build && cd ../frontend && npm install && npm run build"
   }
 } 
