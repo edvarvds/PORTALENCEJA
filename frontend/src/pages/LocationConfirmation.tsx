@@ -131,8 +131,8 @@ const LocationConfirmation: React.FC = () => {
   };
 
   const handleConfirmLocation = async () => {
-    await generatePayment();
     setShowPaymentModal(true);
+    await generatePayment();
   };
 
   return (
@@ -229,12 +229,19 @@ const LocationConfirmation: React.FC = () => {
       {/* Payment Modal */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] flex flex-col shadow-xl">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h3 className="text-lg font-medium">Pagamento via PIX</h3>
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-xl">
+              <div className="flex items-center">
+                <div className="bg-white p-2 rounded-lg mr-3">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-white">Pagamento via PIX</h3>
+              </div>
               <button
                 onClick={() => setShowPaymentModal(false)}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-white hover:text-gray-200 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -242,23 +249,49 @@ const LocationConfirmation: React.FC = () => {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto p-6">
               {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-                  <p className="text-gray-600">Gerando pagamento...</p>
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="bg-blue-50 p-4 rounded-full mb-6">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+                  </div>
+                  <p className="text-gray-700 text-lg font-medium mb-2">Aguarde enquanto geramos seu PIX...</p>
+                  <p className="text-gray-500 text-sm">Isso pode levar alguns segundos</p>
                 </div>
               ) : error ? (
-                <div className="text-center py-8">
-                  <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                    <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="text-center py-12">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
+                    <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
-                  <p className="text-red-600">{error}</p>
+                  <p className="text-red-600 text-lg font-medium">{error}</p>
+                  <button 
+                    onClick={() => setShowPaymentModal(false)}
+                    className="mt-6 px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Fechar
+                  </button>
                 </div>
               ) : paymentData ? (
-                <PaymentDisplay paymentData={paymentData} onSuccess={handlePaymentSuccess} />
+                <div className="space-y-6">
+                  <div className="bg-blue-50 rounded-lg p-6">
+                    <h4 className="text-lg font-medium text-blue-900 mb-4">Detalhes do Pagamento</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Valor</span>
+                        <span className="text-lg font-semibold text-blue-900">R$ 113,40</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Status</span>
+                        <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                          Aguardando Pagamento
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <PaymentDisplay paymentData={paymentData} onSuccess={handlePaymentSuccess} />
+                </div>
               ) : null}
             </div>
           </div>
