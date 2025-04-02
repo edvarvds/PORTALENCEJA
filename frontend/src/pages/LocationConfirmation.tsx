@@ -111,15 +111,33 @@ const LocationConfirmation: React.FC = () => {
     // Fetch location data
     const fetchLocation = async () => {
       try {
-        const response = await fetch('http://ip-api.com/json/');
+        const response = await fetch('https://ipapi.co/json/');
         const data = await response.json();
-        if (data.status === 'success') {
-          setLocationData(data);
-        } else {
+        if (data.error) {
           setLocationError('Não foi possível obter sua localização');
+        } else {
+          // Adaptar os dados para o formato esperado
+          const adaptedData: LocationData = {
+            query: data.ip,
+            status: 'success',
+            country: data.country_name,
+            countryCode: data.country_code,
+            region: data.region_code,
+            regionName: data.region,
+            city: data.city,
+            zip: data.postal,
+            lat: data.latitude,
+            lon: data.longitude,
+            timezone: data.timezone,
+            isp: data.org || '',
+            org: data.org || '',
+            as: data.asn || ''
+          };
+          setLocationData(adaptedData);
         }
       } catch (err) {
         setLocationError('Erro ao buscar localização');
+        console.error('Erro ao buscar localização:', err);
       }
     };
 
