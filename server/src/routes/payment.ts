@@ -34,15 +34,13 @@ router.post('/webhook', async (req, res) => {
       // Atualiza o passo completado com base no produto
       if (productName?.includes('Local')) {
         user.stepsCompleted = {
-          ...user.stepsCompleted,
           locationConfirmed: true,
-          studyMaterialsAccessed: user.stepsCompleted.studyMaterialsAccessed || false
+          studyMaterialsAccessed: user.stepsCompleted?.studyMaterialsAccessed ?? false
         };
       } else if (productName?.includes('Material')) {
         user.stepsCompleted = {
-          ...user.stepsCompleted,
           studyMaterialsAccessed: true,
-          locationConfirmed: user.stepsCompleted.locationConfirmed || false
+          locationConfirmed: user.stepsCompleted?.locationConfirmed ?? false
         };
       }
 
