@@ -1,10 +1,17 @@
-import express from 'express';
+import express, { Request } from 'express';
 import User from '../models/User';
+
+// Define the custom request interface
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+  };
+}
 
 const router = express.Router();
 
 // Update location confirmation step
-router.post('/steps/location', async (req, res) => {
+router.post('/steps/location', async (req: AuthenticatedRequest, res) => {
   try {
     const { confirmed } = req.body;
     const userId = req.user?.id; // Assuming you have user authentication middleware
@@ -31,7 +38,7 @@ router.post('/steps/location', async (req, res) => {
 });
 
 // Update study materials access step
-router.post('/steps/materials', async (req, res) => {
+router.post('/steps/materials', async (req: AuthenticatedRequest, res) => {
   try {
     const { accessed } = req.body;
     const userId = req.user?.id; // Assuming you have user authentication middleware
