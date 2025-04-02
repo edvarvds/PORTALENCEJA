@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config';
 
 interface PaymentFormProps {
   amount: number;
@@ -23,7 +24,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ amount, productName, onSucces
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/payment/create-pix', {
+      const response = await axios.post(`${API_ENDPOINTS.payment}/create-pix`, {
         ...formData,
         amount,
         productName

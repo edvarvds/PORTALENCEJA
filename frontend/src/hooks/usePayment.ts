@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_ENDPOINTS } from '../config';
 
 interface PaymentData {
   qrCode: string;
@@ -50,7 +51,7 @@ export const usePayment = ({ amount, productName, onSuccess }: UsePaymentProps) 
       };
 
       // Make direct request to backend
-      const response = await fetch('http://localhost:3001/api/payment/create-pix', {
+      const response = await fetch(`${API_ENDPOINTS.payment}/create-pix`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

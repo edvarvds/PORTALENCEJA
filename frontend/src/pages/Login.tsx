@@ -5,8 +5,9 @@ import Footer from '../components/shared/Footer';
 import Notification from '../components/shared/Notification';
 import Modal from '../components/shared/Modal';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { API_ENDPOINTS } from '../config';
 
-const API_URL = 'http://localhost:3001/api/auth';
+const API_URL = API_ENDPOINTS.auth;
 
 interface LoginResponse {
   success: boolean;
